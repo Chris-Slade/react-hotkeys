@@ -158,6 +158,7 @@ function withHotKeys(Component, hotKeysOptions = {}) {
         ...props
       } = this.props;
 
+      console.log(`Rendering HotKeys component ${this._id}`);
 
       const hotKeys = {
         onFocus: this._wrapFunction('onFocus', this._handleFocus),
@@ -209,12 +210,22 @@ function withHotKeys(Component, hotKeysOptions = {}) {
         this._focusTreeIds = [];
       }
 
-      this._focusTreeIds.push(componentId);
+      // Uncomment these lines to prevent duplicate focus tree IDs from being
+      // appended.
+
+      // if (this._focusTreeIds.length === 0 || this._focusTreeIds[0] !== componentId) {
+        this._focusTreeIds.push(componentId);
+      // }
+      // else {
+      //   console.log(`Focus tree ID ${componentId} is a duplicate`);
+      // }
+      console.log('Focus tree IDs (after push):', this._focusTreeIds);
     }
 
     _focusTreeIdsShift() {
       if (this._focusTreeIds) {
         this._focusTreeIds.shift();
+        console.log('Focus tree IDs (after shift):', this._focusTreeIds);
       }
     }
 
@@ -259,6 +270,7 @@ function withHotKeys(Component, hotKeysOptions = {}) {
      * @private
      */
     _handleFocus() {
+      console.log(`Handling focus (component ID: ${this._id}, is focused: ${this._focused})`);
       if (this.props.onFocus) {
         this.props.onFocus(...arguments);
       }
@@ -291,6 +303,7 @@ function withHotKeys(Component, hotKeysOptions = {}) {
      * @private
      */
     _handleBlur() {
+      console.log(`Handling blur (component ID: ${this._id}, is focused: ${this._focused})`);
       if (this.props.onBlur) {
         this.props.onBlur(...arguments);
       }
@@ -299,6 +312,9 @@ function withHotKeys(Component, hotKeysOptions = {}) {
 
       if (!retainCurrentFocusTreeId) {
         this._focusTreeIdsShift();
+      }
+      else {
+        console.log('Retaining current focus tree ID for component', this._id);
       }
 
       this._focused = false;
